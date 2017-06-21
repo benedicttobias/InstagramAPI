@@ -21,26 +21,29 @@ namespace Instagram_API_Practice
 
         protected void Page_Load(object sender, EventArgs e)
         {
-			
 
-            // This part assumed that user already auth the app
-            if (!string.IsNullOrEmpty(Request.QueryString["code"]))
-            {
-				lblMessage.Text = "Authentication Successful";
-
-				// Save instagram code
-				instagramCode = Request.QueryString["code"];
-
-				// Post
-				exchangeCode();
-
-			}
-			else if (!string.IsNullOrEmpty(Request.QueryString["error"]))
+			if (!IsPostBack)
 			{
-				lblMessage.Text = Request.QueryString["error"].ToString() + " because " + 
-					Request.QueryString["error_reason"].ToString() + ": " + 
-					Request.QueryString["error_description"].ToString();
+				// This part assumed that user already auth the app
+				if (!string.IsNullOrEmpty(Request.QueryString["code"]))
+				{
+					lblMessage.Text = "Authentication Successful";
+
+					// Save instagram code
+					instagramCode = Request.QueryString["code"];
+
+					// Post
+					exchangeCode();
+
+				}
+				else if (!string.IsNullOrEmpty(Request.QueryString["error"]))
+				{
+					lblMessage.Text = Request.QueryString["error"].ToString() + " because " +
+						Request.QueryString["error_reason"].ToString() + ": " +
+						Request.QueryString["error_description"].ToString();
+				}
 			}
+            
         }
 
 		private void exchangeCode()

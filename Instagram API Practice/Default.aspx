@@ -2,6 +2,27 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
 
+    <script type="text/javascript">
+        function GetSelf() {
+            var AccessToken = $('#lblAccessToken').text();
+            var URL = 'https://api.instagram.com/v1/users/self/?access_token=' + AccessToken;
+
+            $.ajax({
+
+                url: URL,
+                data: {},
+                type: 'GET',
+                crossDomain: true,
+                dataType: 'jsonp',
+                success: GetSelfSuccess,
+                error: function () { alert('Failed!'); }
+            });
+        }
+
+        function GetSelfSuccess(data) {
+            $('pre#GetSelfReturn').text(JSON.stringify(data, undefined, 4));
+        }
+    </script>
 
     <div class="jumbotron">
         <h1>Instagram API Practice</h1>
@@ -12,7 +33,7 @@
         <div class="row">
             <div class="col-md-4">
                 <h2>Login to Instagram</h2>
-                <asp:Button ID="btnLoginInstagram" runat="server" OnClick="btnLoginInstagram_Click" Text="Authenticate" />
+                <asp:Button ID="btnLoginInstagram" runat="server" OnClick="btnLoginInstagram_Click" Text="Authenticate Me" />
                 <asp:Label ID="lblMessage" runat="server"></asp:Label>
             </div>
         </div>
@@ -48,6 +69,11 @@
                 </table>
             </div>
         </div>
+
+        <div class="ApiExample">
+            <button id="btnGetSelf" class="button" type="button" onclick="GetSelf()">Get Self</button>
+            <pre id="GetSelfReturn" class="return"></pre>
+        </div>  
     </asp:Panel>
 
 </asp:Content>
