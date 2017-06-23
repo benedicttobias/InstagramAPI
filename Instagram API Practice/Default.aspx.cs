@@ -10,23 +10,18 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Instagram_API_Practice
-{
-    public partial class _Default : Page
-    {
+namespace Instagram_API_Practice {
+	public partial class _Default : Page {
 		// Global variable
 		public string myClientID = "2126fd843a7c4445b36098470692719d";
 		public string myClientSecret = "4920771ea8074e07bc5a08352d99194d";
 		public string instagramCode;
 
-        protected void Page_Load(object sender, EventArgs e)
-        {
+		protected void Page_Load(object sender, EventArgs e) {
 
-			if (!IsPostBack)
-			{
+			if (!IsPostBack) {
 				// This part assumed that user already auth the app
-				if (!string.IsNullOrEmpty(Request.QueryString["code"]))
-				{
+				if (!string.IsNullOrEmpty(Request.QueryString["code"])) {
 					lblMessage.Text = "Authentication Successful";
 
 					// Save instagram code
@@ -35,25 +30,22 @@ namespace Instagram_API_Practice
 					// Post
 					exchangeCode();
 
-				}
-				else if (!string.IsNullOrEmpty(Request.QueryString["error"]))
-				{
+				} else if (!string.IsNullOrEmpty(Request.QueryString["error"])) {
 					lblMessage.Text = Request.QueryString["error"].ToString() + " because " +
 						Request.QueryString["error_reason"].ToString() + ": " +
 						Request.QueryString["error_description"].ToString();
 				}
 			}
-            
-        }
 
-		private void exchangeCode()
-		{
+		}
+
+		private void exchangeCode() {
 			// Parameter
 			string postData = "client_id=" + myClientID +
-			                  "&client_secret=" + myClientSecret +
-			                  "&grant_type=" + "authorization_code" +
-			                  "&redirect_uri=" + GetMyAddress() +
-			                  "&code=" + instagramCode;
+							  "&client_secret=" + myClientSecret +
+							  "&grant_type=" + "authorization_code" +
+							  "&redirect_uri=" + GetMyAddress() +
+							  "&code=" + instagramCode;
 			byte[] byteArray = Encoding.ASCII.GetBytes(postData);
 
 			WebRequest request = WebRequest.Create("https://api.instagram.com/oauth/access_token");
@@ -67,7 +59,7 @@ namespace Instagram_API_Practice
 			stream.Close();
 
 			// Actual POSTing
-			HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+			HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
 			// Read data
 			stream = response.GetResponseStream();
@@ -75,8 +67,7 @@ namespace Instagram_API_Practice
 			StreamReader reader = new StreamReader(stream);
 
 			// Store data
-			if (response.StatusCode == HttpStatusCode.OK)
-			{
+			if (response.StatusCode == HttpStatusCode.OK) {
 				lblMessage.Text = "Succes exchange data";
 
 				// Read the content
@@ -102,9 +93,7 @@ namespace Instagram_API_Practice
 				// hide panel
 				authBegin.Visible = false;
 				authSuccess.Visible = true;
-			}
-			else
-			{
+			} else {
 				authBegin.Visible = true;
 				authSuccess.Visible = false;
 			}
@@ -114,20 +103,18 @@ namespace Instagram_API_Practice
 			response.Close();
 		}
 
-        protected void btnLoginInstagram_Click(object sender, EventArgs e)
-        {
-            // Return current localhost + its port
-			string myURI = GetMyAddress(); 
-            string redirectInstagram = "https://api.instagram.com/oauth/authorize/?client_id=" + myClientID + "&redirect_uri=" + myURI + "&response_type=code";
+		protected void btnLoginInstagram_Click(object sender, EventArgs e) {
+			// Return current localhost + its port
+			string myURI = GetMyAddress();
+			string redirectInstagram = "https://api.instagram.com/oauth/authorize/?client_id=" + myClientID + "&redirect_uri=" + myURI + "&response_type=code";
 
-            // Ask the user to auth this apps
-            Response.Redirect(redirectInstagram);
+			// Ask the user to auth this apps
+			Response.Redirect(redirectInstagram);
 
-        }
+		}
 
-		private string GetMyAddress()
-		{
+		private string GetMyAddress() {
 			return Request.Url.GetLeftPart(UriPartial.Authority) + Request.Path;
 		}
-    }
+	}
 }
